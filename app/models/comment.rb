@@ -25,9 +25,9 @@ class Comment < ActiveRecord::Base
   validates_presence_of :user
 
   auto_html_for :comment do
-    image
-    youtube(width: 400, height: 250, autoplay: true)
-    link target: '_blank', rel: 'nofollow'
-    simple_format
+    #image
+    #youtube(width: 400, height: 250, autoplay: true)
+    #link target: '_blank', rel: 'nofollow'
+    #simple_format
   end
 end

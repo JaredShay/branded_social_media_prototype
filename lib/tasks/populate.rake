@@ -2,7 +2,6 @@ namespace :fill do
   desc 'Fill data'
   task data: :environment do
     require 'faker'
-    require 'populator'
     puts 'Erasing existing data'
     puts '====================='
 
@@ -13,21 +12,25 @@ namespace :fill do
     puts 'Creating users'
     puts '=============='
     genders = ['male', 'female']
-    password = 'socify'
+    password = 'socify123'
 
-    User.populate 20 do |user|
+    20.times do |n|
+      now = DateTime.now
+
+      user = User.new
       user.name = Faker::Name.name
       user.email = Faker::Internet.email
       user.sex = genders
-      user.dob = Faker::Date.between(45.years.ago, 15.years.ago)
+      user.dob = Time.at((45.years.ago - 15.years.ago).to_f*rand + 15.years.ago.to_f)
       user.phone_number = Faker::PhoneNumber.cell_phone
-      user.encrypted_password = User.new(password: password).encrypted_password
-      user.confirmed_at = DateTime.now
-      user.sign_in_count = 0
+      user.password = password
+      user.confirmed_at = now
+      user.sign_in_count = n
       user.posts_count = 0
+
+      user.save!
       puts "created user #{user.name}"
     end
-
 
     user = User.new(name: 'Rails', email: 'test@socify.com', sex: 'female', password: 'password')
     user.skip_confirmation!
@@ -42,9 +45,9 @@ namespace :fill do
     puts '=============='
     users = User.all
 
-    15.times do
+    15.times do |n|
       post = Post.new
-      post.content = Populator.sentences(2..4)
+      post.content = Faker::Lorem.paragraph(sentence_count: n + 1)
       post.user = users.sample
       post.save!
       puts "created post #{post.id}"
@@ -55,11 +58,11 @@ namespace :fill do
 
     posts = Post.all
 
-    15.times do
+    15.times do |n|
       post = posts.sample
       user = users.sample
       comment = post.comments.new
-      comment.comment = Populator.sentences(1)
+      comment.comment = Faker::Lorem.paragraph(sentence_count: n + 1)
       comment.user = user
       comment.save
       puts "user #{user.name} commented on post #{post.id}"
@@ -68,10 +71,10 @@ namespace :fill do
     puts 'Creating Events'
     puts '==============='
 
-    15.times do
+    15.times do |n|
       event = Event.new
-      event.name = Populator.words(1..3).titleize
-      event.event_datetime = Faker::Date.between(2.years.ago, 1.day.from_now)
+      event.name = Faker::Lorem.words(number: n + 1).join(" ").titleize
+      event.event_datetime = Time.at((2.years.ago - 1.days.ago).to_f*rand + 1.days.ago.to_f)
       event.user = users.sample
       event.save
       puts "created event #{event.name}"
@@ -101,12 +104,12 @@ namespace :fill do
     puts 'Creating Comments For Events'
     puts '============================='
 
-    15.times do
+    15.times do |n|
       event = events.sample
       user = users.sample
       comment = event.comments.new
       comment.commentable_type = 'Event'
-      comment.comment = Populator.sentences(1)
+      comment.comment = Faker::Lorem.paragraph(sentence_count: n + 1)
       comment.user = user
       comment.save
       puts "user #{user.name} commented on event #{event.id}"

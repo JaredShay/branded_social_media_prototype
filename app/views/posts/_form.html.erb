@@ -20,7 +20,7 @@
     </div>
     <% if @post.attachment.present? %>
       <div class="attachment">
-        <%= image_tag @post.attachment %>
+        <%= image_tag @post.attachment.url %>
       </div>
     <% end %>
   <% end %>

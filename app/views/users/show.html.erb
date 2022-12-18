@@ -14,7 +14,7 @@
         <%= render_activities(@activities, layout: '/shared/activity') %>
       <% end %>
     </div>
-    <%= render 'shared/paginate', resources: @activities %>
+    <%#= render 'shared/paginate', resources: @activities %>
   </div>
   <div class="col-lg-3">
     <% if is_current_user?(@user) %>
